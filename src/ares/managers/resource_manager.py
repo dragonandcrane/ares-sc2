@@ -12,6 +12,7 @@ from cython_extensions import (
     cy_distance_to_squared,
     cy_sorted_by_distance_to,
 )
+from loguru import logger
 from sc2.data import Race
 from sc2.position import Point2
 from sc2.unit import Unit
@@ -121,7 +122,8 @@ class ResourceManager(Manager, IManagerMediator):
         self.mineral_target_dict: Dict[Point2, Point2] = {}
         # store which townhall the worker is closest to
         self.worker_tag_to_townhall_tag: Dict[int, int] = {}
-        self._calculate_mineral_targets()
+        if not self.ai.arcade_mode:
+            self._calculate_mineral_targets()
 
         self.went_one_base_defence: bool = False
         # For the initial split we have a special method to assign workers optimally
@@ -221,6 +223,12 @@ class ResourceManager(Manager, IManagerMediator):
         -------
 
         """
+        if self.ai.arcade_mode:
+            logger.warning(
+                f"Mediator requests to resource manager doesn't work on arcade mode."
+                f"The following request will return None: {request}"
+            )
+            return None
         return self.manager_requests_dict[request](kwargs)
 
     async def update(self, iteration: int) -> None:
@@ -235,6 +243,9 @@ class ResourceManager(Manager, IManagerMediator):
         -------
 
         """
+        if self.ai.arcade_mode:
+            return
+
         self.grid = self.manager_mediator.get_ground_grid
         if workers := self.manager_mediator.get_units_from_role(
             role=UnitRole.GATHERING
