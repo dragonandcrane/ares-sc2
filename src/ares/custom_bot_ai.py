@@ -463,3 +463,20 @@ class CustomBotAI(BotAI):
                 return True
 
         return False
+
+    def draw_influence_in_game(
+        self,
+        grid: np.ndarray,
+        lower_threshold: float,
+        upper_threshold: float,
+        color: Tuple[int, int, int],
+        size: int,
+    ) -> None:
+        height: float = self.get_terrain_z_height(self.game_info.map_center)
+        for x, y in zip(*np.where((grid > lower_threshold) & (grid < upper_threshold))):
+            pos: Point3 = Point3((x, y, height))
+            if grid[x, y] == np.inf:
+                val: int = 9999
+            else:
+                val: int = int(grid[x, y])
+            self.client.debug_text_world(str(val), pos, color, size)

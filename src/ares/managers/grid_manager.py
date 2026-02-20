@@ -276,8 +276,12 @@ class GridManager(Manager, IManagerMediator):
                                     str(val), pos, (201, 168, 79), 13
                                 )
                     else:
-                        self.map_data.draw_influence_in_game(
-                            grid, lower_threshold=threshold
+                        self.ai.draw_influence_in_game(
+                            grid,
+                            lower_threshold=threshold,
+                            upper_threshold=np.inf,
+                            color=(201, 168, 79),
+                            size=12,
                         )
                     break
 
