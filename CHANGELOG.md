@@ -2,6 +2,19 @@
 
 <!--next-version-placeholder-->
 
+## v3.3.1 (2026-02-20)
+
+### Fix
+
+* Refine location blocking logic with `check_own` parameter to enhance safety checks ([`d374af3`](https://github.com/AresSC2/ares-sc2/commit/d374af3dcb6bc046371a3fde498fc2d3e379f68b))
+* Prevent resource manager on arcade mode ([`048dfd1`](https://github.com/AresSC2/ares-sc2/commit/048dfd1a5fae032471ad51d2d5b75cd42c8e95ce))
+* Prevent resource manager on arcade mode ([`a400e23`](https://github.com/AresSC2/ares-sc2/commit/a400e2311490c4b7d9e4fbb304cf9cde3e3d0a3c))
+* Draw_influence_in_game works for micro maps ([`b3d314d`](https://github.com/AresSC2/ares-sc2/commit/b3d314d045527f99350511276a30946497b4d4e3))
+
+### Documentation
+
+* Add video reference for combat simulator and maneuvers tutorial ([`fd1e448`](https://github.com/AresSC2/ares-sc2/commit/fd1e44839652bc324c91eee1ea98bdb8f39e3273))
+
 ## v3.3.0 (2026-01-15)
 
 ### Feature
