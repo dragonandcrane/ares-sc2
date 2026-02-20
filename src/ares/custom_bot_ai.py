@@ -405,14 +405,16 @@ class CustomBotAI(BotAI):
             if (
                 check_location_is_safe
                 and not mediator.is_position_safe(grid=grid, position=location)
-                or self.location_is_blocked(mediator, location)
+                or self.location_is_blocked(mediator, location, check_own=True)
             ):
                 continue
 
             return location
         return None
 
-    def location_is_blocked(self, mediator: ManagerMediator, position: Point2) -> bool:
+    def location_is_blocked(
+        self, mediator: ManagerMediator, position: Point2, check_own: bool = False
+    ) -> bool:
         """
         Check if enemy or own townhalls are blocking `position`.
 
@@ -420,6 +422,7 @@ class CustomBotAI(BotAI):
         ----------
         mediator : ManagerMediator
         position : Point2
+        check_own : bool
 
         Returns
         -------
@@ -441,12 +444,13 @@ class CustomBotAI(BotAI):
         if close_enemy:
             return True
 
-        if mediator.get_units_in_range(
-            start_points=[position],
-            distances=5.5,
-            query_tree=UnitTreeQueryType.AllOwn,
-        )[0].filter(lambda u: u.type_id in TOWNHALL_TYPES):
-            return True
+        if check_own:
+            if mediator.get_units_in_range(
+                start_points=[position],
+                distances=5.5,
+                query_tree=UnitTreeQueryType.AllOwn,
+            )[0].filter(lambda u: u.type_id in TOWNHALL_TYPES):
+                return True
 
         return False
 
@@ -463,3 +467,20 @@ class CustomBotAI(BotAI):
                 return True
 
         return False
+
+    def draw_influence_in_game(
+        self,
+        grid: np.ndarray,
+        lower_threshold: float,
+        upper_threshold: float,
+        color: Tuple[int, int, int],
+        size: int,
+    ) -> None:
+        height: float = self.get_terrain_z_height(self.game_info.map_center)
+        for x, y in zip(*np.where((grid > lower_threshold) & (grid < upper_threshold))):
+            pos: Point3 = Point3((x, y, height))
+            if grid[x, y] == np.inf:
+                val: int = 9999
+            else:
+                val: int = int(grid[x, y])
+            self.client.debug_text_world(str(val), pos, color, size)
