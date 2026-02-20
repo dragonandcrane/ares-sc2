@@ -405,14 +405,16 @@ class CustomBotAI(BotAI):
             if (
                 check_location_is_safe
                 and not mediator.is_position_safe(grid=grid, position=location)
-                or self.location_is_blocked(mediator, location)
+                or self.location_is_blocked(mediator, location, check_own=True)
             ):
                 continue
 
             return location
         return None
 
-    def location_is_blocked(self, mediator: ManagerMediator, position: Point2) -> bool:
+    def location_is_blocked(
+        self, mediator: ManagerMediator, position: Point2, check_own: bool = False
+    ) -> bool:
         """
         Check if enemy or own townhalls are blocking `position`.
 
@@ -420,6 +422,7 @@ class CustomBotAI(BotAI):
         ----------
         mediator : ManagerMediator
         position : Point2
+        check_own : bool
 
         Returns
         -------
@@ -441,12 +444,13 @@ class CustomBotAI(BotAI):
         if close_enemy:
             return True
 
-        if mediator.get_units_in_range(
-            start_points=[position],
-            distances=5.5,
-            query_tree=UnitTreeQueryType.AllOwn,
-        )[0].filter(lambda u: u.type_id in TOWNHALL_TYPES):
-            return True
+        if check_own:
+            if mediator.get_units_in_range(
+                start_points=[position],
+                distances=5.5,
+                query_tree=UnitTreeQueryType.AllOwn,
+            )[0].filter(lambda u: u.type_id in TOWNHALL_TYPES):
+                return True
 
         return False
 
