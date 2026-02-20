@@ -137,7 +137,7 @@ class IntelManager(Manager, IManagerMediator):
                 f"Mediator requests to intel manager doesn't work on arcade mode."
                 f"The following request will return None: {request}"
             )
-            return
+            return None
         return self.manager_requests_dict[request](kwargs)
 
     @property_cache_once_per_frame
